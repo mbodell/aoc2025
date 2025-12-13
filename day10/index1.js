@@ -60,33 +60,57 @@ function joltEqual(c,j) {
 	}
 	return ret;
 }
+function findDist(cur,jolt) {
+	let ret = 0;
+	for(let i=0;i<cur.length;i++) {
+		ret += jolt[i]-cur[i];
+	}
+	return ret;
+}
+
+let memo={};
 
 function solveMachine(cur,but,jolt,best) {
+	let str = ""+cur+":"+best+":"+but;
+	if(memo[str]) {
+		return memo[str];
+	}
 	if(joltEqual(cur,jolt)) {
+		memo[str]=0;
 		return 0;
 	}
 	if(but.length===0) {
+		memo[str]=-1;
 		return -1;
 	}
 	let bestSolve = -1;
 	let maxPush = findMaxPush(cur,but[0],jolt);
-	if(best !== -1 && best < maxPush) {
+	if(best !== -1 && (best < maxPush)) {
+		memo[str]=-1;
+		return -1;
+	}
+	if(best !==-1 && (but[0].length*best<findDist(cur,jolt))) {
+		//console.log(`Cut out ${but[0].length} with ${best} and ${findDist(cur,jolt)}`);
+		memo[str]=-1;
 		return -1;
 	}
 	let butTail = [];
 	for(i=1;i<but.length;i++) {
 		butTail.push(but[i]);
 	}
+	//console.log(`Trying ${maxPush} button presses with ${but.length} buttons left trying ${cur} to get to ${jolt}`);
 	for(let push=maxPush;push>=0;push--) {
 		let work = pushButNTimes(cur,but[0],push);
 		let curBest = (bestSolve===-1)?-1:bestSolve-push;
 		let nextBest = solveMachine(work,butTail,jolt,curBest);
 		if(nextBest !== -1) {
+			console.log(`***** A solution with ${but.length} buttons with ${nextBest+push} as the solution (previous ${bestSolve})*****`);
 			if(bestSolve === -1 || (nextBest + push)<bestSolve) {
 				bestSolve = nextBest+push;
 			}
 		}
 	}
+	memo[str]=bestSolve;
 	return bestSolve;
 }
 
@@ -100,6 +124,7 @@ eachLine(filename, function(line) {
 }).then(function(err) {
 	for(let i=0;i<machines.length;i++) {
 		let minSol = -1;
+		memo={};
 		let lights = [];
 		for(let j=0;j<machines[i][0].length;j++) {
 			lights.push(0);
