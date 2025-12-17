@@ -20,14 +20,16 @@ eachLine(filename, function(line) {
 	}
 }).then(function(err) {
 	let v = {};
-	v["you"] = 1;
-	paths.push(['you',v]);
+	v["svr"] = 1;
+	paths.push(['svr',v]);
 	while(paths.length>0) {
 		let can = paths.shift();
 		let nexts = cons[can[0]];
 		for(let i=0;i<nexts.length;i++) {
 			if(nexts[i]==="out") {
-				numPath++;
+				if(can[1]["fft"]&&can[1]["dac"]) {
+					numPath++;
+				}
 			} else {
 				if(can[1][nexts[i]]) {
 					console.log(`looped,skipping`);
