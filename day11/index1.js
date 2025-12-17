@@ -14,7 +14,7 @@ let memo = {};
 
 function solve(src,dest) {
 	let hash = src+dest;
-	if(memo[hash]) {
+	if(memo[hash]!== undefined) {
 		return memo[hash];
 	}
 	if(src===dest) {
@@ -49,19 +49,14 @@ eachLine(filename, function(line) {
 	memo = {};
 	numSvrDac = solve('svr','dac');
 	console.log(`numSvrDac = ${numSvrDac}`);
-	memo = {};
 	numSvrFft = solve('svr','fft');
 	console.log(`numSvrFft = ${numSvrFft}`);
-	memo = {};
 	numDacFft = solve('dac','fft');
 	console.log(`numDacFft = ${numDacFft}`);
-	memo = {};
 	numFftDac = solve('fft','dac');
 	console.log(`numFftDac = ${numFftDac}`);
-	memo = {};
 	numFftOut = solve('fft','out');
 	console.log(`numFftOut = ${numFftOut}`);
-	memo = {};
 	numDacOut = solve('dac','out');
 	console.log(`numDacOut = ${numDacOut}`);
 	let dacFirst = numSvrDac * numDacFft * numFftOut;
